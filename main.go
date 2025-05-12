@@ -2,13 +2,27 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
+	"path/filepath"
+	"github.com/gin-gonic/gin"
+	"rhysmistele.xyz/backend/routes"
 )
 
 func main() {
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/", fs)
+	router := gin.Default()
+
+	buildPath := filepath.Join("..", "rhysmistele.xyz-frontend", "dist")
+
+	router.Static("/assets", filepath.Join(buildPath, "assets"))
+	router.NoRoute(func (c * gin.Context) {
+		c.File(filepath.Join(buildPath, "index.html"))
+	})
+
+	api := router.Group("/api")
+	{
+		api.GET("/articles/", routes.GetArticles())
+		api.GET("/article/:id", routes.GetArticle())
+	}
 
 	port := os.Getenv("PORT")
 
@@ -18,5 +32,5 @@ func main() {
 
 	fmt.Printf("Running Server On http://localhost:%s\n", port)
 
-	http.ListenAndServe(":"+port, nil)
+	router.Run(":" + port)
 }
