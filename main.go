@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"net/http"
 	"path/filepath"
 	"github.com/gin-gonic/gin"
 	"rhysmistele.xyz/backend/routes"
@@ -10,6 +11,18 @@ import (
 
 func main() {
 	router := gin.Default()
+	router.Use((func(c *gin.Context) {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+			c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+			if c.Request.Method == "OPTIONS" {
+				c.AbortWithStatus(http.StatusNoContent)
+				return
+			}
+
+			c.Next()
+	}))
 
 	buildPath := filepath.Join("..", "rhysmistele.xyz-frontend", "dist")
 
@@ -18,10 +31,12 @@ func main() {
 		c.File(filepath.Join(buildPath, "index.html"))
 	})
 
+
 	api := router.Group("/api")
 	{
-		api.GET("/articles/", routes.GetArticles())
-		api.GET("/article/:id", routes.GetArticle())
+		api.GET("/articles", routes.GetArticles())
+		api.GET("/article/:name", routes.GetArticle())
+		api.GET("/images", routes.GetImage())
 	}
 
 	port := os.Getenv("PORT")
