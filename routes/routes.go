@@ -16,16 +16,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MarkdownPayload struct {
-	title string
-	markdown_string string
-}
-
-type MetaDataPayload struct {
-	description string
-	date string
-}
-
 type ArticleCardPayload struct {
 	Title string `json:"title"`
 	Description string `json:"description"`
