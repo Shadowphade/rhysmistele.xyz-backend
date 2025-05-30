@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"net/http"
+	"os"
 	"path/filepath"
+
 	"github.com/gin-gonic/gin"
 	"rhysmistele.xyz/backend/routes"
+	"rhysmistele.xyz/backend/terminal"
 )
 
 func main() {
@@ -37,6 +39,11 @@ func main() {
 		api.GET("/articles", routes.GetArticles())
 		api.GET("/article/:name", routes.GetArticle())
 		api.GET("/images", routes.GetImage())
+	}
+
+	projects := api.Group("/projects")
+	{
+		projects.GET("/terminal/startsession", terminal.StartTerminalSession())
 	}
 
 	port := os.Getenv("PORT")
