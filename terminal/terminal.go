@@ -3,7 +3,6 @@ package terminal
 import (
 	"math/rand/v2"
 	"os/exec"
-	"strings"
 	// "time"
 )
 
@@ -16,10 +15,11 @@ type TerminalSession struct {
 
 func New(command string) TerminalSession {
 	sessionId := genSessionID()
-	initCommand := command
+	//initCommand := command
 
-	command_args := strings.Split(initCommand, " ");
-	cmd := exec.Command(command_args[0], command[1:]); //Remember you can get the stdin and stdout from this guy
+	// command_args := strings.Split(initCommand, " ");
+	//log.Println("Command: ", command_args)
+	cmd := exec.Command("bash", "-c", command[0:]); //Remember you can get the stdin and stdout from this guy
 
 	var output TerminalSession;
 	output.SessionID = sessionId
